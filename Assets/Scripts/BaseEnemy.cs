@@ -21,8 +21,8 @@ public class BaseEnemy : MonoBehaviour
     void Update()
     {
         target = GetComponent<ObjectDetectionRadius>().GetNearestGameobject();
-
-        if (target != null)
+        AnimatorStateInfo animInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (target != null && !isAttacking)
         {
             agent.SetDestination(target.position);
 
@@ -79,11 +79,12 @@ public class BaseEnemy : MonoBehaviour
                 // Animation finished
                 isAttacking = false;
                 agent.isStopped = false;
-
             }
-            if (animInfo.IsName("Attack") && animInfo.normalizedTime >= 0.4f && !damageDealt)
+            if (animInfo.IsName("Attack") && animInfo.normalizedTime >= 0.5f && !damageDealt)
             {
-                Debug.Log("PlayerHealthDecrease");
+                HealthScript healthScript = FindObjectOfType<PlayerMovement>().GetComponent<HealthScript>();
+                healthScript.TakeDamage(10);
+                healthScript.Die();
                 damageDealt = true;
             }
         }
@@ -91,9 +92,5 @@ public class BaseEnemy : MonoBehaviour
         {
             attackTimer -= Time.deltaTime; // Cooldown timer
         }
-
-
     }
-
-    
 }

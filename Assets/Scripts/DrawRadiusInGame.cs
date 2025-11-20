@@ -27,7 +27,7 @@ public class DrawRadiusInGame : MonoBehaviour
             float x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
             float z = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
 
-            line.SetPosition(i, new Vector3(x, 0, z));
+            line.SetPosition(i, new Vector3(x, -1, z));
 
             angle += 360f / segments;
         }
