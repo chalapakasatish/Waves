@@ -10,7 +10,8 @@ public class Fire : MonoBehaviour
 
     void Update()
     {
-        if (Time.time > nextFire && GetComponent<PlayerMovement>().target != null)
+        if (Time.time > nextFire && GetComponent<PlayerMovement>().target != null && 
+            GetComponent<PlayerMovement>().target.GetComponent<HealthScript>().isAlive && GetComponent<HealthScript>().isAlive)
         {
             nextFire = Time.time + fireRate;
             Shoot();

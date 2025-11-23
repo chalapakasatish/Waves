@@ -11,7 +11,7 @@ public class ObjectDetectionRadius : MonoBehaviour
     
     public void Update()
     {
-        Transform target = GetNearestGameobject();
+        GetNearestGameobject();
     }
     public Transform GetNearestGameobject()
     {

@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 moveDirection;
     public Transform target;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -17,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         target = GetComponent<ObjectDetectionRadius>().GetNearestGameobject();
-        if (target != null)
+        if (target != null && target.GetComponent<HealthScript>().isAlive)
         {
             // direction only on XZ plane
             Vector3 dir = target.position - transform.position;

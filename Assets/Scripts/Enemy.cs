@@ -1,18 +1,17 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class BaseEnemy : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
     public float attackCooldown = 2f;
 
     private float attackTimer;
-    private NavMeshAgent agent;
+    public NavMeshAgent agent;
     public Animator animator;
     public Transform target;
 
     private bool isAttacking = false;
     private bool damageDealt;
-
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -20,39 +19,42 @@ public class BaseEnemy : MonoBehaviour
 
     void Update()
     {
-        target = GetComponent<ObjectDetectionRadius>().GetNearestGameobject();
-        AnimatorStateInfo animInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (target != null && !isAttacking)
+        if(GetComponent<HealthScript>().isAlive)
         {
-            agent.SetDestination(target.position);
-
-            // direction only on XZ plane
-            Vector3 dir = target.position - transform.position;
-            dir.y = 0f;
-
-            // rotate player
-            Quaternion lookRot = Quaternion.LookRotation(dir);
-            transform.rotation = Quaternion.Lerp(transform.rotation, lookRot, Time.deltaTime * 10f);
-
-
-
-
-
-            animator.SetBool("isMoving", agent.velocity.magnitude > 0.1f);
-            agent.isStopped = false;
-            // Check if in attack range
-            if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
+            agent.enabled = true;
+            target = GetComponent<ObjectDetectionRadius>().GetNearestGameobject();
+            AnimatorStateInfo animInfo = animator.GetCurrentAnimatorStateInfo(0);
+            if (target != null && !isAttacking)
             {
-                TryAttack();
-            }
-        }
-        else
-        {
-            animator.SetBool("isMoving", false);
-            agent.isStopped = true;
-        }
+                agent.SetDestination(target.position);
 
-        HandleAttackState(); // Manage attack timing WITHOUT animation events
+                // direction only on XZ plane
+                Vector3 dir = target.position - transform.position;
+                dir.y = 0f;
+
+                // rotate player
+                Quaternion lookRot = Quaternion.LookRotation(dir);
+                transform.rotation = Quaternion.Lerp(transform.rotation, lookRot, Time.deltaTime * 10f);
+                
+                animator.SetBool("isMoving", agent.velocity.magnitude > 0.1f);
+                agent.isStopped = false;
+                // Check if in attack range
+                if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending && target.GetComponent<HealthScript>().isAlive)
+                {
+                    TryAttack();
+                }
+            }
+            else
+            {
+                animator.SetBool("isMoving", false);
+                agent.isStopped = true;
+            }
+            HandleAttackState(); // Manage attack timing WITHOUT animation events
+        }
+        if(GetComponent<HealthScript>().isAlive == false)
+        {
+            agent.enabled = false;
+        }
     }
 
     private void TryAttack()
